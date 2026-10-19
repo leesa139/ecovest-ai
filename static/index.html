@@ -1,0 +1,2349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>EcoVest AI – Intelligent ESG Investment Advisor &amp; Sustainability Analytics</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090e17;
+      --bg-card: rgba(16, 24, 39, 0.82);
+      --bg-card-hover: rgba(22, 34, 54, 0.92);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(16, 185, 129, 0.35);
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --emerald: #10b981;
+      --emerald-glow: rgba(16, 185, 129, 0.22);
+      --cyan: #06b6d4;
+      --blue: #3b82f6;
+      --violet: #8b5cf6;
+      --amber: #f59e0b;
+      --rose: #f43f5e;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --font: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.12) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(6, 182, 212, 0.10) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, rgba(139, 92, 246, 0.08) 0px, transparent 60%);
+      background-attachment: fixed;
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      background: rgba(9, 14, 23, 0.88);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #10b981, #06b6d4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 0 20px var(--emerald-glow);
+    }
+    .brand-text h1 {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      background: linear-gradient(90deg, #fff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .brand-text span {
+      font-size: 11px;
+      color: var(--emerald);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      display: block;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      padding: 5px 12px;
+      border-radius: 99px;
+      font-size: 11px;
+      color: #a7f3d0;
+      font-weight: 600;
+    }
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--emerald);
+      box-shadow: 0 0 10px var(--emerald);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    /* Navigation */
+    nav {
+      display: flex;
+      gap: 4px;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 4px;
+      border-radius: 99px;
+      border: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    nav button {
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      padding: 7px 15px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    nav button:hover { color: #fff; }
+    nav button.active {
+      background: var(--emerald);
+      color: #042f2e;
+      font-weight: 700;
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.35);
+    }
+
+    /* User Corner */
+    .user-corner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-sm {
+      padding: 6px 14px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      transition: all 0.2s;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-sm:hover { border-color: var(--emerald); color: #fff; }
+    .btn-primary {
+      background: var(--emerald);
+      color: #042f2e;
+      border-color: var(--emerald);
+      font-weight: 700;
+    }
+    .btn-primary:hover {
+      background: #34d399;
+      box-shadow: 0 0 16px var(--emerald-glow);
+    }
+
+    /* Main Container */
+    main {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* Layout Grids */
+    .grid-kpis {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    @media (min-width: 900px) {
+      .grid-kpis { grid-template-columns: repeat(3, 1fr); }
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      position: relative;
+      transition: border-color 0.25s, transform 0.2s;
+    }
+    .card:hover { border-color: rgba(255, 255, 255, 0.14); }
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: -0.2px;
+    }
+    .card-title .icon { color: var(--emerald); }
+    .card-subtitle {
+      font-size: 11px;
+      color: var(--text-dim);
+      font-weight: 500;
+    }
+
+    /* KPI Cards */
+    .kpi-card {
+      padding: 16px 18px;
+      background: linear-gradient(135deg, rgba(16, 24, 39, 0.9), rgba(11, 20, 34, 0.7));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      position: relative;
+      overflow: hidden;
+    }
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--emerald), transparent);
+      opacity: 0.5;
+    }
+    .kpi-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .kpi-val {
+      font-size: 28px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+      margin-bottom: 6px;
+      font-family: var(--font-mono);
+    }
+    .kpi-val.emerald { color: #34d399; }
+    .kpi-val.cyan    { color: #38bdf8; }
+    .kpi-val.violet  { color: #a78bfa; }
+    .kpi-val.amber   { color: #fbbf24; }
+    .kpi-val.rose    { color: #fb7185; }
+    .kpi-sub {
+      font-size: 11px;
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .kpi-badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 99px;
+      font-size: 10px;
+      font-weight: 700;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    /* Chart Canvas Container */
+    .chart-container { position: relative; height: 270px; width: 100%; }
+    .chart-container.tall { height: 330px; }
+    .chart-container.xl { height: 420px; }
+
+    /* Preset Buttons */
+    .preset-bar {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+      align-items: center;
+    }
+    .preset-chip {
+      padding: 5px 12px;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .preset-chip:hover, .preset-chip.active {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: var(--emerald);
+      color: #34d399;
+    }
+
+    .pillar-header {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 16px 0 10px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .slider-group { margin-bottom: 12px; }
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+      font-size: 12px;
+    }
+    .slider-label { font-weight: 600; color: var(--text); }
+    .slider-val { font-weight: 700; color: var(--emerald); font-family: var(--font-mono); }
+
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 99px;
+      outline: none;
+      margin: 4px 0;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--emerald);
+      cursor: pointer;
+      box-shadow: 0 0 10px var(--emerald-glow);
+      border: 2px solid #fff;
+      transition: transform 0.1s;
+    }
+    input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+
+    /* Sim Panel Layout */
+    .sim-panel {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+    @media (max-width: 900px) { .sim-panel { grid-template-columns: 1fr; } }
+    .sim-summary-box {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(6, 182, 212, 0.08));
+      border: 1px solid var(--border-accent);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+    .sim-big-stat { display: flex; align-items: center; gap: 16px; }
+    .sim-stat-number {
+      font-size: 52px;
+      font-weight: 800;
+      color: #34d399;
+      letter-spacing: -2px;
+      line-height: 1;
+      font-family: var(--font-mono);
+    }
+    .sim-stat-meta h4 { font-size: 13px; color: #fff; font-weight: 700; margin-bottom: 4px; }
+    .sim-stat-meta p { font-size: 12px; color: var(--text-muted); }
+
+    /* Big Verdict Banner */
+    .verdict-box {
+      border-radius: var(--radius);
+      padding: 22px 24px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      border: 1px solid var(--border);
+    }
+    .verdict-box.verdict-Buy   { background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(6, 182, 212, 0.08)); border-color: #10b981; box-shadow: 0 0 30px rgba(16, 185, 129, 0.2); }
+    .verdict-box.verdict-Hold  { background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.05)); border-color: #f59e0b; box-shadow: 0 0 30px rgba(245, 158, 11, 0.15); }
+    .verdict-box.verdict-Avoid { background: linear-gradient(135deg, rgba(244, 63, 94, 0.15), rgba(244, 63, 94, 0.05)); border-color: #f43f5e; box-shadow: 0 0 30px rgba(244, 63, 94, 0.15); }
+
+    .verdict-title { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
+    .verdict-Buy .verdict-title   { color: #34d399; }
+    .verdict-Hold .verdict-title  { color: #fbbf24; }
+    .verdict-Avoid .verdict-title { color: #fb7185; }
+
+    .action-badge {
+      font-size: 20px;
+      font-weight: 800;
+      padding: 6px 20px;
+      border-radius: 99px;
+      letter-spacing: 0.5px;
+    }
+    .action-Buy   { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 2px solid #10b981; box-shadow: 0 0 16px var(--emerald-glow); }
+    .action-Hold  { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 2px solid #f59e0b; }
+    .action-Avoid { background: rgba(244, 63, 94, 0.2); color: #fb7185; border: 2px solid #f43f5e; }
+
+    .thesis-item {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      margin-bottom: 10px;
+    }
+    .thesis-item.positive { border-left: 3px solid var(--emerald); }
+    .thesis-item.warning  { border-left: 3px solid var(--amber); }
+    .thesis-item.danger   { border-left: 3px solid var(--rose); }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th {
+      text-align: left;
+      padding: 10px 12px;
+      color: var(--text-dim);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--text);
+    }
+    tr.clickable-row { cursor: pointer; }
+    tr.clickable-row:hover td { background: rgba(255, 255, 255, 0.04); }
+    .tag {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .tag-Buy   { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .tag-Hold  { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .tag-Avoid { background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); }
+
+    /* Modals */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-card {
+      background: #0f172a;
+      border: 1px solid var(--border-accent);
+      border-radius: var(--radius);
+      max-width: 580px;
+      width: 100%;
+      padding: 28px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-card h2 { font-size: 18px; font-weight: 800; margin-bottom: 6px; color: #fff; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; }
+    input[type=text], input[type=number], input[type=email], input[type=password], select {
+      width: 100%;
+      padding: 9px 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: #fff;
+      font-family: inherit;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input[type=text]:focus, input[type=number]:focus, input[type=email]:focus, input[type=password]:focus, select:focus {
+      border-color: var(--emerald);
+    }
+
+    /* AI Lab Styles */
+    .lab-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      background: rgba(255,255,255,0.02);
+      padding: 6px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+    .lab-tab {
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      background: none;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .lab-tab:hover { color: #fff; border-color: var(--border); }
+    .lab-tab.active {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: var(--emerald);
+      color: #34d399;
+    }
+    .dt-tree {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .dt-leaf {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      text-align: center;
+      font-size: 12px;
+    }
+    .dt-leaf .leaf-label { font-weight: 700; color: var(--cyan); margin-bottom: 6px; font-size: 11px; }
+    .dt-leaf .leaf-pred  { font-size: 15px; font-weight: 800; margin: 6px 0; }
+    .dt-leaf.pred-Buy   { border-color: rgba(16,185,129,0.4);  background: rgba(16,185,129,0.06); }
+    .dt-leaf.pred-Hold  { border-color: rgba(245,158,11,0.4);  background: rgba(245,158,11,0.06); }
+    .dt-leaf.pred-Avoid { border-color: rgba(244,63,94,0.4);   background: rgba(244,63,94,0.06); }
+    .hc-step {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+      margin-bottom: 8px;
+      transition: all 0.3s;
+    }
+    .hc-step.current { border-color: var(--emerald); background: rgba(16,185,129,0.08); }
+    .hc-num {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: rgba(16,185,129,0.15);
+      color: #34d399;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 800;
+      flex-shrink: 0;
+    }
+    .ga-coeff-row { display: grid; grid-template-columns: repeat(4, 1fr) auto; gap: 8px; align-items: center; margin-bottom: 14px; }
+    .peas-table td, .peas-table th { border: 1px solid var(--border); }
+    .peas-table th { background: rgba(16,185,129,0.1); color: #34d399; }
+    .factor-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .factor-card .factor-name { font-weight: 700; color: #fff; }
+    .factor-card .factor-var  { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+    .factor-pct {
+      font-size: 18px;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: #34d399;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 20px 24px;
+      margin-top: 40px;
+      font-size: 12px;
+      color: var(--text-dim);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top App Navigation -->
+  <header>
+    <div class="brand-wrap" onclick="nav('dash')">
+      <div class="brand-icon">🌱</div>
+      <div class="brand-text">
+        <h1>EcoVest AI</h1>
+        <span>Intelligent ESG Investment Advisor &amp; Sustainability Analytics</span>
+      </div>
+    </div>
+
+    <div class="status-pill">
+      <span class="pulse-dot"></span>
+      <span>10,000 Companies Monitored · Random Forest Scoring Active</span>
+    </div>
+
+    <nav id="mainNav">
+      <button class="active" onclick="nav('dash')">📊 Executive Dashboard</button>
+      <button onclick="nav('eval')">🎯 Company Evaluator</button>
+      <button onclick="nav('sim')">⚡ Investment Simulator</button>
+      <button onclick="nav('exp')">🔍 Company Screener</button>
+      <button onclick="nav('lab')">🧪 AI Techniques Lab</button>
+      <button onclick="nav('acc')">👤 My Account</button>
+    </nav>
+
+    <div class="user-corner">
+      <span id="userChip" style="font-size: 12px; color: var(--text-muted); display: none;"></span>
+      <button id="authBtn" class="btn-sm btn-primary" onclick="openAuthModal()">Login / Register</button>
+      <button id="logoutBtn" class="btn-sm" style="display: none;" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <!-- App Content Root -->
+  <main id="app">
+    <div style="text-align: center; padding: 60px 0; color: var(--text-muted);">
+      Loading EcoVest ESG Investment Platform…
+    </div>
+  </main>
+
+  <!-- Global Footer -->
+  <footer>
+    <div>
+      <strong>EcoVest AI Platform:</strong> Machine Learning ESG Evaluation &amp; Investment Decision Support
+    </div>
+    <div>
+      Coverage: <strong>10,000 Corporate Securities · 8 Industry Sectors · 7 Global Markets</strong>
+    </div>
+    <div style="width: 100%; color: var(--text-dim); font-style: italic;">
+      Reference: Khare, V. &amp; Bhatia, M. (2026), The evolution of sustainable building governance, <em>Next Energy</em> 13, 100834.
+    </div>
+  </footer>
+
+  <!-- Auth Modal -->
+  <div id="authModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card" style="max-width: 420px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h2 id="modalTitle">Access EcoVest AI</h2>
+        <button style="background: none; border: none; color: var(--text-dim); font-size: 18px; cursor: pointer;" onclick="closeAuthModal()">✕</button>
+      </div>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">
+        Sign in to save custom company simulations, build your ESG investment watchlist, and export portfolio analyses.
+      </p>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="authEmail" placeholder="analyst@fund.com">
+      </div>
+      <div class="form-group">
+        <label>Password (min 6 characters)</label>
+        <input type="password" id="authPassword" placeholder="••••••••">
+      </div>
+      <p id="authError" style="color: var(--rose); font-size: 12px; margin-bottom: 12px; display: none;"></p>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn-sm btn-primary" style="flex: 1; padding: 10px;" onclick="submitAuth('login')">Sign In</button>
+        <button class="btn-sm" style="flex: 1; padding: 10px;" onclick="submitAuth('register')">Create Account</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Company Detail Modal -->
+  <div id="companyModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h2 id="modalCompName">Company Details</h2>
+        <button style="background: none; border: none; color: var(--text-dim); font-size: 18px; cursor: pointer;" onclick="closeCompanyModal()">✕</button>
+      </div>
+      <div id="modalCompBody">Loading profile…</div>
+    </div>
+  </div>
+
+  <script>
+    // ---------- State Management ----------
+    const S = {
+      curTab: 'dash',
+      token: localStorage.getItem('ecovest_tok') || '',
+      email: localStorage.getItem('ecovest_email') || '',
+      dashData: null,
+      charts: {},
+      labTab: 'kmeans',
+      hcPath: [],
+      gaRunning: false,
+      gaCoeffs: [2, 4, 7, 9],
+      gaTarget: 70,
+      gaHistory: [],
+      sim: {
+        renewable_energy: 70.0, waste_recycling: 65.0, carbon_emission_score: 40.0,
+        water_management: 70.0, employee_satisfaction: 75.0, gender_diversity: 35.0,
+        governance_score: 80.0, esg_controversies: 1, roe: 22.0, stock_volatility: 22.0,
+        simulation_label: 'Custom Company'
+      },
+      evalInput: {
+        company_name: 'Tata Motors', industry_sector: 'Automobile', country: 'India',
+        market_cap_billion: 38.5, renewable_energy: 72.0, waste_recycling: 68.0,
+        carbon_emission_score: 35.0, water_management: 75.0, employee_satisfaction: 80.0,
+        gender_diversity: 28.0, governance_score: 82.0, esg_controversies: 1,
+        roe: 19.5, stock_volatility: 26.0
+      },
+      evalResult: null
+    };
+
+    // ---------- API Helper ----------
+    async function api(path, opts = {}) {
+      const headers = { 'Content-Type': 'application/json' };
+      if (S.token) headers['Authorization'] = 'Bearer ' + S.token;
+      const res = await fetch('/api' + path, {
+        ...opts,
+        headers: { ...headers, ...(opts.headers || {}) },
+        body: opts.body ? JSON.stringify(opts.body) : undefined
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.detail || 'API request failed');
+      return data;
+    }
+
+    // ---------- Chart Factory ----------
+    function destroyChart(id) {
+      if (S.charts[id]) { S.charts[id].destroy(); delete S.charts[id]; }
+    }
+
+    function renderChart(id, config) {
+      destroyChart(id);
+      const ctx = document.getElementById(id);
+      if (!ctx) return;
+      Chart.defaults.color = '#94a3b8';
+      Chart.defaults.font.family = "'Plus Jakarta Sans', system-ui, sans-serif";
+      Chart.defaults.font.size = 11;
+      S.charts[id] = new Chart(ctx, {
+        ...config,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { boxWidth: 12, padding: 12, color: '#94a3b8' }, ...(config.options?.plugins?.legend || {}) },
+            tooltip: {
+              backgroundColor: 'rgba(15, 23, 42, 0.95)',
+              borderColor: 'rgba(255, 255, 255, 0.1)',
+              borderWidth: 1, titleColor: '#fff', bodyColor: '#cbd5e1',
+              padding: 10, cornerRadius: 8, ...(config.options?.plugins?.tooltip || {})
+            }
+          },
+          scales: {
+            x: { grid: { color: 'rgba(255, 255, 255, 0.04)' }, ticks: { color: '#64748b' }, ...(config.options?.scales?.x || {}) },
+            y: { grid: { color: 'rgba(255, 255, 255, 0.04)' }, ticks: { color: '#64748b' }, ...(config.options?.scales?.y || {}) },
+            ...(config.options?.scales || {})
+          },
+          ...(config.options || {})
+        }
+      });
+    }
+
+    // ---------- Navigation Router ----------
+    function nav(tab) {
+      S.curTab = tab;
+      const tabKeys = ['dash', 'eval', 'sim', 'exp', 'lab', 'acc'];
+      document.querySelectorAll('#mainNav button').forEach((b, i) => {
+        b.classList.toggle('active', tabKeys[i] === tab);
+      });
+      render();
+    }
+
+    async function init() {
+      updateUserUI();
+      try {
+        S.dashData = await api('/dashboard');
+      } catch (e) {
+        console.error('Failed to load dashboard data:', e);
+      }
+      render();
+    }
+
+    function updateUserUI() {
+      const uChip = document.getElementById('userChip');
+      const authBtn = document.getElementById('authBtn');
+      const logoutBtn = document.getElementById('logoutBtn');
+      if (S.token && S.email) {
+        uChip.textContent = '👤 ' + S.email;
+        uChip.style.display = 'inline';
+        authBtn.style.display = 'none';
+        logoutBtn.style.display = 'inline-block';
+      } else {
+        uChip.style.display = 'none';
+        authBtn.style.display = 'inline-block';
+        logoutBtn.style.display = 'none';
+      }
+    }
+
+    function render() {
+      if      (S.curTab === 'dash') renderDashboard();
+      else if (S.curTab === 'eval') renderEvaluator();
+      else if (S.curTab === 'sim')  renderSimulator();
+      else if (S.curTab === 'exp')  renderExplorer();
+      else if (S.curTab === 'lab')  renderLab();
+      else if (S.curTab === 'acc')  renderAccount();
+    }
+
+    // ==========================================
+    // 1. EXECUTIVE ESG DASHBOARD
+    // ==========================================
+    function renderDashboard() {
+      const app = document.getElementById('app');
+      const d = S.dashData || {};
+      const k = d.kpis || {};
+      const topSector = d.sector_rankings?.[0]?.[0] || '—';
+      const topSectorScore = d.sector_rankings?.[0]?.[1] || '—';
+
+      app.innerHTML = `
+        <!-- Top Executive KPI Ribbon (3-col on desktop) -->
+        <div class="grid-kpis">
+          <div class="kpi-card">
+            <div class="kpi-label"><span>Monitored Companies</span><span class="kpi-badge">8 Sectors</span></div>
+            <div class="kpi-val emerald">${(k.total_companies || 10000).toLocaleString()}</div>
+            <div class="kpi-sub"><span>Market Cap: <b>$${k.total_market_cap_trillion || '2.39'}T</b></span></div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-label"><span>Market Avg ESG Score</span><span class="kpi-badge">Benchmark</span></div>
+            <div class="kpi-val cyan">${k.avg_esg_score || 54.0} <span style="font-size: 14px; color: var(--text-dim);">/ 100</span></div>
+            <div class="kpi-sub"><span>Normal Distribution Profile</span></div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-label"><span>Buy Rated Leaders</span><span class="kpi-badge">Top Picks</span></div>
+            <div class="kpi-val emerald">${(k.buy_count || 261).toLocaleString()}</div>
+            <div class="kpi-sub"><span>High ESG &amp; Financial Stability</span></div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-label"><span>Hold Rated Firms</span><span class="kpi-badge">Transitioning</span></div>
+            <div class="kpi-val amber">${(k.hold_count || 4248).toLocaleString()}</div>
+            <div class="kpi-sub"><span>Moderate Sustainability Readiness</span></div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-label">
+              <span>Avoid / High Risk</span>
+              <span class="kpi-badge" style="color: #fb7185; background: rgba(244,63,94,0.15); border-color: rgba(244,63,94,0.3);">Laggards</span>
+            </div>
+            <div class="kpi-val rose">${(k.avoid_count || 5491).toLocaleString()}</div>
+            <div class="kpi-sub"><span>Heavy Carbon / High Controversy</span></div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-label"><span>Top Performing Sector</span><span class="kpi-badge" style="color:#60a5fa;background:rgba(59,130,246,0.15);border-color:rgba(59,130,246,0.3);">Leader</span></div>
+            <div class="kpi-val" style="font-size:20px; color: #60a5fa; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${topSector}</div>
+            <div class="kpi-sub"><span>Avg ESG Score: <b>${topSectorScore}</b></span></div>
+          </div>
+        </div>
+
+        <!-- Model Performance Card -->
+        <div class="card" style="margin-bottom: 24px; background: linear-gradient(135deg, rgba(139,92,246,0.10), rgba(16,185,129,0.06)); border-color: rgba(139,92,246,0.3);">
+          <div class="card-header">
+            <div>
+              <div class="card-title"><span class="icon">🤖</span> Random Forest Model Performance (80/20 Hold-out Test)</div>
+              <div class="card-subtitle">Computed on unseen 20% test split at server startup</div>
+            </div>
+          </div>
+          <div style="display:flex; gap:24px; flex-wrap:wrap; align-items:center;">
+            <div>
+              <div style="font-size:11px;color:var(--text-muted);font-weight:700;text-transform:uppercase;">Regressor R² (ESG Score)</div>
+              <div style="font-size:32px;font-weight:800;color:#a78bfa;font-family:var(--font-mono);">${d.rf_r2 || '—'}</div>
+            </div>
+            <div>
+              <div style="font-size:11px;color:var(--text-muted);font-weight:700;text-transform:uppercase;">Classifier Accuracy (Rating)</div>
+              <div style="font-size:32px;font-weight:800;color:#34d399;font-family:var(--font-mono);">${d.rf_accuracy || '—'}%</div>
+            </div>
+            <div style="flex:1;min-width:220px;">
+              <div style="background:rgba(244,63,94,0.08);border:1px solid rgba(244,63,94,0.3);border-radius:8px;padding:10px 14px;font-size:12px;color:#fda4af;">
+                ⚠️ <b>Note:</b> The <em>Buy</em> class is rare (~2.6% of dataset). Precision &amp; recall for Buy are weighted accordingly — overall accuracy is driven by the Hold/Avoid majority.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick CTA Banner -->
+        <div class="card" style="margin-bottom: 24px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(6, 182, 212, 0.08)); border-color: var(--border-accent); padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+          <div>
+            <h3 style="font-size: 16px; color: #fff; font-weight: 700; margin-bottom: 4px;">🎯 Evaluate Any Custom or Random Company</h3>
+            <p style="font-size: 12px; color: var(--text-muted);">Enter a company name, its environmental, social, and financial factors to get an instant ESG Score and Investment Worthiness Verdict.</p>
+          </div>
+          <button class="btn-sm btn-primary" style="padding: 10px 20px;" onclick="nav('eval')">Evaluate a Company Now →</button>
+        </div>
+
+        <!-- Charts Grid 1: Rec Donut & Sector Bar -->
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title"><span class="icon">🍩</span> Investment Recommendation Breakdown</div>
+                <div class="card-subtitle">Distribution across 10,000 corporate securities</div>
+              </div>
+              <span class="tag tag-Buy">${(k.buy_count || 261)} Buy</span>
+            </div>
+            <div class="chart-container"><canvas id="chartRecDonut"></canvas></div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title"><span class="icon">📊</span> Industry Sector ESG Performance</div>
+                <div class="card-subtitle">Average ESG Score across all 8 market sectors</div>
+              </div>
+            </div>
+            <div class="chart-container"><canvas id="chartSectorBar"></canvas></div>
+          </div>
+        </div>
+
+        <!-- Charts Grid 2: 3-Pillar & Score Distribution -->
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title"><span class="icon">🏛️</span> 3-Pillar ESG Comparison by Sector</div>
+                <div class="card-subtitle">Environmental (E), Social (S), and Governance (G) breakdown</div>
+              </div>
+            </div>
+            <div class="chart-container tall"><canvas id="chartPillars"></canvas></div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title"><span class="icon">📈</span> Overall ESG Score Distribution</div>
+                <div class="card-subtitle">Frequency of companies across score bands (25–95)</div>
+              </div>
+            </div>
+            <div class="chart-container tall"><canvas id="chartScoreDist"></canvas></div>
+          </div>
+        </div>
+
+        <!-- Charts Grid 3: Country & Feature Importance -->
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title"><span class="icon">🌍</span> Country-Level ESG Performance</div>
+                <div class="card-subtitle">Average ESG score by corporate jurisdiction</div>
+              </div>
+            </div>
+            <div class="chart-container"><canvas id="chartCountryBar"></canvas></div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title"><span class="icon">💡</span> Key ESG Score Drivers (Feature Importance)</div>
+                <div class="card-subtitle">ML feature weight in determining company rating</div>
+              </div>
+            </div>
+            <div class="chart-container"><canvas id="chartFeatImp"></canvas></div>
+          </div>
+        </div>
+
+        <!-- Tables: Top Champions & Bottom Laggards -->
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title"><span class="icon">🏆</span> Top 5 ESG Champions (Buy Opportunities)</div>
+                <div class="card-subtitle">Highest composite ESG performers with solid returns</div>
+              </div>
+            </div>
+            <div style="overflow-x: auto;">
+              <table>
+                <thead><tr><th>Company</th><th>Sector</th><th>Country</th><th>ESG Score</th><th>ROE</th><th>Action</th></tr></thead>
+                <tbody>
+                  ${(d.top_champions || []).map(c => `
+                    <tr class="clickable-row" onclick="viewCompany(${c.Company_ID})">
+                      <td><b>${c.Company_Name}</b></td>
+                      <td>${c.Industry_Sector}</td>
+                      <td>${c.Country}</td>
+                      <td><b style="color: #34d399;">${c.Overall_ESG_Score}</b></td>
+                      <td>${c.ROE}%</td>
+                      <td><span class="tag tag-Buy">Buy</span></td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title"><span class="icon">⚠️</span> Bottom 5 High-Risk Securities (Avoid)</div>
+                <div class="card-subtitle">Severe carbon exposure, low recycling or controversies</div>
+              </div>
+            </div>
+            <div style="overflow-x: auto;">
+              <table>
+                <thead><tr><th>Company</th><th>Sector</th><th>Country</th><th>ESG Score</th><th>Risk</th><th>Action</th></tr></thead>
+                <tbody>
+                  ${(d.bottom_laggards || []).map(c => `
+                    <tr class="clickable-row" onclick="viewCompany(${c.Company_ID})">
+                      <td><b>${c.Company_Name}</b></td>
+                      <td>${c.Industry_Sector}</td>
+                      <td>${c.Country}</td>
+                      <td><b style="color: #fb7185;">${c.Overall_ESG_Score}</b></td>
+                      <td><span class="tag tag-Avoid">High</span></td>
+                      <td><span class="tag tag-Avoid">Avoid</span></td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Draw Charts
+      const rec = d.recommendations_donut || { Buy: 261, Hold: 4248, Avoid: 5491 };
+      renderChart('chartRecDonut', {
+        type: 'doughnut',
+        data: {
+          labels: ['Buy (High Conviction)', 'Hold (Transitioning)', 'Avoid (High Risk)'],
+          datasets: [{ data: [rec.Buy || 261, rec.Hold || 4248, rec.Avoid || 5491], backgroundColor: ['#10b981', '#f59e0b', '#f43f5e'], borderColor: '#0f172a', borderWidth: 2 }]
+        },
+        options: { plugins: { legend: { position: 'right' } } }
+      });
+
+      const sectors = d.sector_rankings || [];
+      renderChart('chartSectorBar', {
+        type: 'bar',
+        data: {
+          labels: sectors.map(s => s[0]),
+          datasets: [{ label: 'Average ESG Score', data: sectors.map(s => s[1]), backgroundColor: '#06b6d4', borderRadius: 6 }]
+        },
+        options: { indexAxis: 'y', scales: { x: { min: 45, max: 65 } } }
+      });
+
+      const pillars = d.pillar_by_sector || [];
+      renderChart('chartPillars', {
+        type: 'bar',
+        data: {
+          labels: pillars.map(p => p.sector),
+          datasets: [
+            { label: 'Environmental (E)', data: pillars.map(p => p.environmental), backgroundColor: '#10b981', borderRadius: 4 },
+            { label: 'Social (S)',        data: pillars.map(p => p.social),        backgroundColor: '#06b6d4', borderRadius: 4 },
+            { label: 'Governance (G)',    data: pillars.map(p => p.governance),    backgroundColor: '#8b5cf6', borderRadius: 4 }
+          ]
+        },
+        options: { scales: { y: { min: 30, max: 80 } } }
+      });
+
+      const dist = d.score_distribution || [];
+      renderChart('chartScoreDist', {
+        type: 'bar',
+        data: {
+          labels: dist.map(d => d.range),
+          datasets: [{ label: 'Company Count', data: dist.map(d => d.count), backgroundColor: '#10b981', borderRadius: 6 }]
+        },
+        options: { scales: { y: { beginAtZero: true } } }
+      });
+
+      const countries = d.country_rankings || [];
+      renderChart('chartCountryBar', {
+        type: 'bar',
+        data: {
+          labels: countries.map(c => c[0]),
+          datasets: [{ label: 'Average ESG Score', data: countries.map(c => c[1]), backgroundColor: '#3b82f6', borderRadius: 6 }]
+        },
+        options: { scales: { y: { min: 45, max: 62 } } }
+      });
+
+      const feats = Object.entries(d.feature_importances || {}).sort((a, b) => b[1] - a[1]);
+      renderChart('chartFeatImp', {
+        type: 'bar',
+        data: {
+          labels: feats.map(f => f[0].replace(/_/g, ' ')),
+          datasets: [{ label: 'Importance (%)', data: feats.map(f => f[1]), backgroundColor: '#a78bfa', borderRadius: 6 }]
+        },
+        options: { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { ticks: { callback: v => v + '%' } } } }
+      });
+    }
+
+    // ==========================================
+    // 2. DEDICATED COMPANY EVALUATOR
+    // ==========================================
+    function renderEvaluator() {
+      const app = document.getElementById('app');
+      const inp = S.evalInput;
+      app.innerHTML = `
+        <div class="card" style="margin-bottom: 20px; padding: 14px 20px;">
+          <div class="preset-bar">
+            <span style="font-size: 12px; font-weight: 700; color: #fff; margin-right: 6px;">⚡ Quick Autofill Templates:</span>
+            <button class="preset-chip" onclick="applyEvalTemplate('tata')">🚗 Tata Motors (Automobile)</button>
+            <button class="preset-chip" onclick="applyEvalTemplate('tesla')">⚡ Tesla (Clean Tech)</button>
+            <button class="preset-chip" onclick="applyEvalTemplate('reliance')">⛽ Reliance (Energy)</button>
+            <button class="preset-chip" onclick="applyEvalTemplate('infosys')">💻 Infosys (IT Services)</button>
+            <button class="preset-chip" onclick="applyEvalTemplate('laggard')">⚠️ High-Risk Industrial</button>
+            <button class="preset-chip" onclick="applyEvalTemplate('reset')">🔄 Blank Custom</button>
+          </div>
+        </div>
+
+        <div class="sim-panel">
+          <!-- Left: Input Form -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title"><span class="icon">🎯</span> Company Evaluation Parameters</div>
+                <div class="card-subtitle">Enter company identity and sustainability metrics to calculate investment verdict</div>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label>Company Name</label>
+                <input type="text" id="ev_name" value="${inp.company_name}" placeholder="e.g. Tata Motors" oninput="S.evalInput.company_name = this.value">
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label>Industry Sector</label>
+                <select id="ev_sector" onchange="S.evalInput.industry_sector = this.value">
+                  ${['Automobile', 'Banking', 'Energy', 'Healthcare', 'IT', 'Manufacturing', 'Retail', 'Telecom'].map(s => `
+                    <option value="${s}" ${inp.industry_sector === s ? 'selected' : ''}>${s}</option>
+                  `).join('')}
+                </select>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label>Country / Headquarters</label>
+                <select id="ev_country" onchange="S.evalInput.country = this.value">
+                  ${['India', 'USA', 'UK', 'Germany', 'Japan', 'Australia', 'Canada'].map(c => `
+                    <option value="${c}" ${inp.country === c ? 'selected' : ''}>${c}</option>
+                  `).join('')}
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label>Market Cap ($ Billion)</label>
+                <input type="number" id="ev_mcap" value="${inp.market_cap_billion}" placeholder="e.g. 25" oninput="S.evalInput.market_cap_billion = parseFloat(this.value) || 0">
+              </div>
+            </div>
+
+            <div class="pillar-header">🌿 1. Environmental Factors (E)</div>
+            <div class="slider-group">
+              <div class="slider-header"><span class="slider-label">Renewable Energy Usage (%)</span><span id="ev_v_reu" class="slider-val">${inp.renewable_energy}%</span></div>
+              <input type="range" min="0" max="100" value="${inp.renewable_energy}" oninput="updateEvalField('renewable_energy', this.value, 'ev_v_reu', '%')">
+            </div>
+            <div class="slider-group">
+              <div class="slider-header"><span class="slider-label">Waste Recycling Rate (%)</span><span id="ev_v_wrr" class="slider-val">${inp.waste_recycling}%</span></div>
+              <input type="range" min="0" max="100" value="${inp.waste_recycling}" oninput="updateEvalField('waste_recycling', this.value, 'ev_v_wrr', '%')">
+            </div>
+            <div class="slider-group">
+              <div class="slider-header"><span class="slider-label">Carbon Emission Score (Lower is Greener)</span><span id="ev_v_ces" class="slider-val">${inp.carbon_emission_score}</span></div>
+              <input type="range" min="10" max="100" value="${inp.carbon_emission_score}" oninput="updateEvalField('carbon_emission_score', this.value, 'ev_v_ces', '')">
+            </div>
+            <div class="slider-group">
+              <div class="slider-header"><span class="slider-label">Water Management Score</span><span id="ev_v_wms" class="slider-val">${inp.water_management}</span></div>
+              <input type="range" min="0" max="100" value="${inp.water_management}" oninput="updateEvalField('water_management', this.value, 'ev_v_wms', '')">
+            </div>
+
+            <div class="pillar-header">👥 2. Social &amp; Workforce Factors (S)</div>
+            <div class="slider-group">
+              <div class="slider-header"><span class="slider-label">Employee Satisfaction Score</span><span id="ev_v_emp" class="slider-val">${inp.employee_satisfaction}</span></div>
+              <input type="range" min="20" max="100" value="${inp.employee_satisfaction}" oninput="updateEvalField('employee_satisfaction', this.value, 'ev_v_emp', '')">
+            </div>
+            <div class="slider-group">
+              <div class="slider-header"><span class="slider-label">Gender Diversity Ratio (%)</span><span id="ev_v_div" class="slider-val">${inp.gender_diversity}%</span></div>
+              <input type="range" min="10" max="60" value="${inp.gender_diversity}" oninput="updateEvalField('gender_diversity', this.value, 'ev_v_div', '%')">
+            </div>
+
+            <div class="pillar-header">⚖️ 3. Corporate Governance (G)</div>
+            <div class="slider-group">
+              <div class="slider-header"><span class="slider-label">Governance &amp; Board Score</span><span id="ev_v_gov" class="slider-val">${inp.governance_score}</span></div>
+              <input type="range" min="20" max="100" value="${inp.governance_score}" oninput="updateEvalField('governance_score', this.value, 'ev_v_gov', '')">
+            </div>
+            <div class="slider-group">
+              <div class="slider-header"><span class="slider-label">Recorded Public Controversies</span><span id="ev_v_con" class="slider-val">${inp.esg_controversies}</span></div>
+              <input type="range" min="0" max="10" value="${inp.esg_controversies}" oninput="updateEvalField('esg_controversies', this.value, 'ev_v_con', '')">
+            </div>
+
+            <div class="pillar-header">📈 4. Financial Viability</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              <div class="slider-group">
+                <div class="slider-header"><span class="slider-label">ROE (%)</span><span id="ev_v_roe" class="slider-val">${inp.roe}%</span></div>
+                <input type="range" min="-20" max="50" value="${inp.roe}" oninput="updateEvalField('roe', this.value, 'ev_v_roe', '%')">
+              </div>
+              <div class="slider-group">
+                <div class="slider-header"><span class="slider-label">Volatility (%)</span><span id="ev_v_vol" class="slider-val">${inp.stock_volatility}%</span></div>
+                <input type="range" min="5" max="75" value="${inp.stock_volatility}" oninput="updateEvalField('stock_volatility', this.value, 'ev_v_vol', '%')">
+              </div>
+            </div>
+
+            <div style="margin-top: 18px;">
+              <button class="btn-sm btn-primary" style="width: 100%; padding: 12px; font-size: 13px; justify-content: center;" onclick="calculateCompanyEvaluation()">
+                🚀 Calculate ESG Score &amp; Evaluate Investment Worthiness
+              </button>
+            </div>
+          </div>
+
+          <!-- Right: Evaluation Results -->
+          <div id="evalResultContainer">
+            <div style="text-align: center; padding: 60px 20px; color: var(--text-muted);">
+              Click "Calculate ESG Score &amp; Evaluate Investment Worthiness" to run AI evaluation.
+            </div>
+          </div>
+        </div>
+      `;
+      calculateCompanyEvaluation();
+    }
+
+    function updateEvalField(key, val, elId, unit) {
+      S.evalInput[key] = parseFloat(val);
+      const el = document.getElementById(elId);
+      if (el) el.textContent = val + unit;
+      debounceEval();
+    }
+    let evalTimer = null;
+    function debounceEval() {
+      clearTimeout(evalTimer);
+      evalTimer = setTimeout(calculateCompanyEvaluation, 200);
+    }
+
+    async function calculateCompanyEvaluation() {
+      const container = document.getElementById('evalResultContainer');
+      if (!container) return;
+      try {
+        const res = await api('/evaluate', { method: 'POST', body: S.evalInput });
+        S.evalResult = res;
+        container.innerHTML = `
+          <div class="verdict-box verdict-${res.recommendation}">
+            <div>
+              <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">AI Investment Verdict</div>
+              <div class="verdict-title">${res.verdict_title}</div>
+              <p style="font-size: 13px; color: var(--text); line-height: 1.5; max-width: 520px;">${res.verdict_desc}</p>
+            </div>
+            <div style="text-align: right;">
+              <div class="action-badge action-${res.recommendation}">${res.recommendation.toUpperCase()}</div>
+              <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">Risk Level: <b>${res.investment_risk}</b></div>
+            </div>
+          </div>
+
+          <div class="grid-kpis" style="margin-bottom: 20px;">
+            <div class="kpi-card">
+              <div class="kpi-label">Overall ESG Score</div>
+              <div class="kpi-val emerald">${res.esg_score} <span style="font-size: 13px; color: var(--text-dim);">/ 100</span></div>
+              <div class="kpi-sub"><span class="kpi-badge">Top ${100 - res.percentile}% Global</span></div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Environmental (E)</div>
+              <div class="kpi-val cyan">${res.pillar_scores.environmental.score}</div>
+              <div class="kpi-sub">Grade: <b>${res.pillar_scores.environmental.grade.split(' ')[0]}</b></div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Social Pillar (S)</div>
+              <div class="kpi-val violet">${res.pillar_scores.social.score}</div>
+              <div class="kpi-sub">Grade: <b>${res.pillar_scores.social.grade.split(' ')[0]}</b></div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Governance (G)</div>
+              <div class="kpi-val amber">${res.pillar_scores.governance.score}</div>
+              <div class="kpi-sub">Grade: <b>${res.pillar_scores.governance.grade.split(' ')[0]}</b></div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom: 20px;">
+            <div class="card-header">
+              <div class="card-title"><span class="icon">🕸️</span> Multidimensional Sustainability Footprint</div>
+              <span class="tag tag-Buy">${res.company_name} vs Market Avg</span>
+            </div>
+            <div class="chart-container tall"><canvas id="chartEvalRadar"></canvas></div>
+          </div>
+
+          <div class="card" style="margin-bottom: 20px;">
+            <div class="card-header"><div class="card-title"><span class="icon">📋</span> Investment Committee Report Card</div></div>
+            <div style="margin-bottom: 14px;">
+              <div style="font-size: 11px; font-weight: 700; color: #34d399; margin-bottom: 6px; text-transform: uppercase;">✅ Key Sustainability Strengths</div>
+              ${res.strengths.map(s => `<div class="thesis-item positive">${s}</div>`).join('')}
+            </div>
+            <div style="margin-bottom: 14px;">
+              <div style="font-size: 11px; font-weight: 700; color: #fb7185; margin-bottom: 6px; text-transform: uppercase;">⚠️ Material Risks &amp; Vulnerabilities</div>
+              ${res.weaknesses.map(w => `<div class="thesis-item danger">${w}</div>`).join('')}
+            </div>
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-accent); border-radius: var(--radius-sm); padding: 14px;">
+              <div style="font-size: 11px; font-weight: 700; color: #38bdf8; margin-bottom: 4px; text-transform: uppercase;">🎯 Analyst Guidance for Portfolio Allocation</div>
+              <p style="font-size: 13px; color: #fff; line-height: 1.5;">${res.investor_action}</p>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 10px;">
+            <button class="btn-sm btn-primary" style="flex: 1; padding: 10px; justify-content: center;" onclick="window.print()">🖨️ Print / Export Report</button>
+            <button class="btn-sm" style="padding: 10px;" onclick="saveEvaluatedCompany()">⭐ Save Evaluation</button>
+          </div>
+        `;
+        renderChart('chartEvalRadar', {
+          type: 'radar',
+          data: {
+            labels: res.radar_profile.labels,
+            datasets: [
+              { label: res.company_name, data: res.radar_profile.values, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.25)', borderWidth: 2, pointBackgroundColor: '#10b981' },
+              { label: 'Market Average', data: res.radar_profile.benchmark, borderColor: '#64748b', borderDash: [4, 4], borderWidth: 1.5, pointRadius: 2 }
+            ]
+          },
+          options: { scales: { r: { min: 0, max: 100, ticks: { display: false }, grid: { color: 'rgba(255,255,255,0.08)' }, angleLines: { color: 'rgba(255,255,255,0.08)' }, pointLabels: { color: '#94a3b8', font: { size: 10 } } } } }
+        });
+      } catch (err) {
+        container.innerHTML = `<p style="color: var(--rose);">Error: ${err.message}</p>`;
+      }
+    }
+
+    function applyEvalTemplate(type) {
+      const templates = {
+        tata:     { company_name: 'Tata Motors', industry_sector: 'Automobile', country: 'India', market_cap_billion: 38.5, renewable_energy: 72, waste_recycling: 68, carbon_emission_score: 35, water_management: 75, employee_satisfaction: 80, gender_diversity: 28, governance_score: 82, esg_controversies: 1, roe: 19.5, stock_volatility: 26 },
+        tesla:    { company_name: 'Tesla Inc.', industry_sector: 'Automobile', country: 'USA', market_cap_billion: 720, renewable_energy: 92, waste_recycling: 85, carbon_emission_score: 20, water_management: 82, employee_satisfaction: 85, gender_diversity: 32, governance_score: 85, esg_controversies: 2, roe: 24, stock_volatility: 32 },
+        reliance: { company_name: 'Reliance Industries', industry_sector: 'Energy', country: 'India', market_cap_billion: 210, renewable_energy: 48, waste_recycling: 55, carbon_emission_score: 58, water_management: 65, employee_satisfaction: 70, gender_diversity: 24, governance_score: 72, esg_controversies: 2, roe: 14.5, stock_volatility: 22 },
+        infosys:  { company_name: 'Infosys Ltd.', industry_sector: 'IT', country: 'India', market_cap_billion: 82, renewable_energy: 88, waste_recycling: 90, carbon_emission_score: 18, water_management: 88, employee_satisfaction: 84, gender_diversity: 39, governance_score: 92, esg_controversies: 0, roe: 28, stock_volatility: 18 },
+        laggard:  { company_name: 'Heavy Smoke Industries', industry_sector: 'Manufacturing', country: 'India', market_cap_billion: 4.2, renewable_energy: 15, waste_recycling: 20, carbon_emission_score: 88, water_management: 25, employee_satisfaction: 42, gender_diversity: 14, governance_score: 38, esg_controversies: 5, roe: -4, stock_volatility: 55 },
+        reset:    { company_name: 'Custom Company', industry_sector: 'IT', country: 'India', market_cap_billion: 10, renewable_energy: 50, waste_recycling: 50, carbon_emission_score: 50, water_management: 50, employee_satisfaction: 60, gender_diversity: 25, governance_score: 65, esg_controversies: 1, roe: 12, stock_volatility: 25 }
+      };
+      S.evalInput = templates[type] || templates.reset;
+      renderEvaluator();
+    }
+
+    async function saveEvaluatedCompany() {
+      if (!S.token) return openAuthModal();
+      try { await calculateCompanyEvaluation(); alert(`Evaluation for ${S.evalInput.company_name} saved!`); } catch (e) { alert(e.message); }
+    }
+
+    // ==========================================
+    // 3. INVESTMENT SIMULATOR
+    // ==========================================
+    function renderSimulator() {
+      const app = document.getElementById('app');
+      app.innerHTML = `
+        <div class="card" style="margin-bottom: 20px; padding: 14px 20px;">
+          <div class="preset-bar">
+            <span style="font-size: 12px; font-weight: 700; color: #fff; margin-right: 6px;">⚡ Quick Presets:</span>
+            <button class="preset-chip" onclick="applySimPreset('leader')">🌟 Clean Tech Champion (Buy)</button>
+            <button class="preset-chip" onclick="applySimPreset('transition')">⚖️ Energy Transition (Hold)</button>
+            <button class="preset-chip" onclick="applySimPreset('laggard')">⚠️ Carbon-Intensive Laggard (Avoid)</button>
+            <button class="preset-chip" onclick="applySimPreset('healthcare')">🏥 Healthcare Benchmark</button>
+            <button class="preset-chip" onclick="applySimPreset('default')">⚙️ Custom Sandbox</button>
+          </div>
+        </div>
+
+        <div class="sim-panel">
+          <!-- Left: Sliders -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title"><span class="icon">🎛️</span> Company ESG &amp; Financial Levers</div>
+                <div class="card-subtitle">Adjust inputs to simulate AI investment rating in real-time</div>
+              </div>
+            </div>
+            <div class="pillar-header">🌿 Environmental Pillar (E)</div>
+            <div class="slider-group">
+              <div class="slider-header"><span class="slider-label">Renewable Energy Usage (%)</span><span id="val_reu" class="slider-val">${S.sim.renewable_energy}%</span></div>
+              <input type="range" min="0" max="100" value="${S.sim.renewable_energy}" oninput="updateSimField('renewable_energy', this.value, 'val_reu', '%')">
+            </div>
+            <div class="slider-group">
+              <div class="slider-header"><span class="slider-label">Waste Recycling Rate (%)</span><span id="val_wrr" class="slider-val">${S.sim.waste_recycling}%</span></div>
+              <input type="range" min="0" max="100" value="${S.sim.waste_recycling}" oninput="updateSimField('waste_recycling', this.value, 'val_wrr', '%')">
+            </div>
+            <div class="slider-group">
+              <div class="slider-header"><span class="slider-label">Carbon Emission Score (Lower is Greener)</span><span id="val_ces" class="slider-val">${S.sim.carbon_emission_score}</span></div>
+              <input type="range" min="10" max="100" value="${S.sim.carbon_emission_score}" oninput="updateSimField('carbon_emission_score', this.value, 'val_ces', '')">
+            </div>
+            <div class="slider-group">
+              <div class="slider-header"><span class="slider-label">Water Management Score</span><span id="val_wms" class="slider-val">${S.sim.water_management}</span></div>
+              <input type="range" min="0" max="100" value="${S.sim.water_management}" oninput="updateSimField('water_management', this.value, 'val_wms', '')">
+            </div>
+            <div class="pillar-header">👥 Social Pillar (S)</div>
+            <div class="slider-group">
+              <div class="slider-header"><span class="slider-label">Employee Satisfaction Score</span><span id="val_emp" class="slider-val">${S.sim.employee_satisfaction}</span></div>
+              <input type="range" min="20" max="100" value="${S.sim.employee_satisfaction}" oninput="updateSimField('employee_satisfaction', this.value, 'val_emp', '')">
+            </div>
+            <div class="slider-group">
+              <div class="slider-header"><span class="slider-label">Gender Diversity Ratio (%)</span><span id="val_div" class="slider-val">${S.sim.gender_diversity}%</span></div>
+              <input type="range" min="10" max="60" value="${S.sim.gender_diversity}" oninput="updateSimField('gender_diversity', this.value, 'val_div', '%')">
+            </div>
+            <div class="pillar-header">⚖️ Governance Pillar (G)</div>
+            <div class="slider-group">
+              <div class="slider-header"><span class="slider-label">Corporate Governance Score</span><span id="val_gov" class="slider-val">${S.sim.governance_score}</span></div>
+              <input type="range" min="20" max="100" value="${S.sim.governance_score}" oninput="updateSimField('governance_score', this.value, 'val_gov', '')">
+            </div>
+            <div class="slider-group">
+              <div class="slider-header"><span class="slider-label">Recorded ESG Controversies</span><span id="val_con" class="slider-val">${S.sim.esg_controversies}</span></div>
+              <input type="range" min="0" max="10" value="${S.sim.esg_controversies}" oninput="updateSimField('esg_controversies', this.value, 'val_con', '')">
+            </div>
+            <div class="pillar-header">📈 Financial &amp; Market Factors</div>
+            <div class="slider-group">
+              <div class="slider-header"><span class="slider-label">Return on Equity (ROE %)</span><span id="val_roe" class="slider-val">${S.sim.roe}%</span></div>
+              <input type="range" min="-20" max="50" value="${S.sim.roe}" oninput="updateSimField('roe', this.value, 'val_roe', '%')">
+            </div>
+            <div class="slider-group">
+              <div class="slider-header"><span class="slider-label">Stock Price Volatility (%)</span><span id="val_vol" class="slider-val">${S.sim.stock_volatility}%</span></div>
+              <input type="range" min="5" max="75" value="${S.sim.stock_volatility}" oninput="updateSimField('stock_volatility', this.value, 'val_vol', '%')">
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 20px;">
+              <button class="btn-sm btn-primary" style="flex: 1; padding: 10px;" onclick="runSimulation()">⚡ Run AI Assessment</button>
+              <button class="btn-sm" style="padding: 10px;" onclick="saveSimRun()">💾 Save Simulation</button>
+            </div>
+          </div>
+
+          <!-- Right: Simulation Output -->
+          <div>
+            <div class="sim-summary-box">
+              <div class="sim-big-stat">
+                <div id="simScoreVal" class="sim-stat-number">--</div>
+                <div class="sim-stat-meta">
+                  <h4>Predicted Overall ESG Score</h4>
+                  <p id="simRiskLabel">Investment Risk: Evaluating…</p>
+                </div>
+              </div>
+              <div>
+                <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; font-weight: 700;">AI Recommendation</div>
+                <div id="simActionBadge" class="action-badge action-Hold">HOLD</div>
+              </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 20px;">
+              <div class="card-header">
+                <div class="card-title"><span class="icon">🕸️</span> Multidimensional Sustainability Profile</div>
+                <span class="tag tag-Buy">vs Market Average</span>
+              </div>
+              <div class="chart-container tall"><canvas id="chartSimRadar"></canvas></div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <div class="card-title"><span class="icon">🤖</span> AI Investment Thesis &amp; Action Plan</div>
+                  <div class="card-subtitle">Automated diagnosis of strengths, red flags, and upgrade path</div>
+                </div>
+              </div>
+              <div id="simThesisContainer"><p style="color: var(--text-muted);">Running diagnostic assessment…</p></div>
+            </div>
+          </div>
+        </div>
+      `;
+      runSimulation();
+    }
+
+    function updateSimField(key, val, elId, unit) {
+      S.sim[key] = parseFloat(val);
+      const el = document.getElementById(elId);
+      if (el) el.textContent = val + unit;
+      debounceSim();
+    }
+    let simTimer = null;
+    function debounceSim() { clearTimeout(simTimer); simTimer = setTimeout(runSimulation, 150); }
+
+    async function runSimulation() {
+      try {
+        const res = await api('/simulate', { method: 'POST', body: S.sim });
+        const elScore = document.getElementById('simScoreVal');
+        const elRisk = document.getElementById('simRiskLabel');
+        const elAction = document.getElementById('simActionBadge');
+        if (elScore) elScore.textContent = res.predicted_esg_score;
+        if (elRisk) elRisk.innerHTML = `Investment Risk: <b>${res.investment_risk}</b> · E: ${res.pillar_scores.environmental} | S: ${res.pillar_scores.social} | G: ${res.pillar_scores.governance}`;
+        if (elAction) { elAction.className = 'action-badge action-' + res.recommendation; elAction.textContent = res.recommendation.toUpperCase(); }
+        renderChart('chartSimRadar', {
+          type: 'radar',
+          data: {
+            labels: res.radar_profile.labels,
+            datasets: [
+              { label: 'Simulated Company', data: res.radar_profile.values, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.25)', borderWidth: 2, pointBackgroundColor: '#10b981' },
+              { label: 'Market Average',    data: res.radar_profile.market_average, borderColor: '#64748b', borderDash: [4, 4], borderWidth: 1.5, pointRadius: 2 }
+            ]
+          },
+          options: { scales: { r: { min: 0, max: 100, ticks: { display: false }, grid: { color: 'rgba(255,255,255,0.08)' }, angleLines: { color: 'rgba(255,255,255,0.08)' }, pointLabels: { color: '#94a3b8', font: { size: 10 } } } } }
+        });
+        const tc = document.getElementById('simThesisContainer');
+        if (tc) {
+          tc.innerHTML = `
+            <div style="margin-bottom: 12px;">
+              <div style="font-size: 11px; font-weight: 700; color: #34d399; margin-bottom: 6px; text-transform: uppercase;">✅ Key Strengths</div>
+              ${res.thesis.strengths.map(s => `<div class="thesis-item positive">${s}</div>`).join('')}
+            </div>
+            <div style="margin-bottom: 12px;">
+              <div style="font-size: 11px; font-weight: 700; color: #fb7185; margin-bottom: 6px; text-transform: uppercase;">⚠️ Red Flags</div>
+              ${res.thesis.red_flags.map(f => `<div class="thesis-item danger">${f}</div>`).join('')}
+            </div>
+            <div>
+              <div style="font-size: 11px; font-weight: 700; color: #38bdf8; margin-bottom: 6px; text-transform: uppercase;">💡 Recommended Steps</div>
+              ${res.thesis.action_items.map(a => `<div class="thesis-item warning"><b>Action:</b> ${a}</div>`).join('')}
+            </div>
+          `;
+        }
+      } catch (e) { console.error('Simulation error:', e); }
+    }
+
+    function applySimPreset(type) {
+      const presets = {
+        leader:     { renewable_energy: 92, waste_recycling: 88, carbon_emission_score: 22, water_management: 85, employee_satisfaction: 90, gender_diversity: 45, governance_score: 92, esg_controversies: 0, roe: 28, stock_volatility: 18, simulation_label: 'Clean Tech Leader' },
+        transition: { renewable_energy: 55, waste_recycling: 58, carbon_emission_score: 52, water_management: 60, employee_satisfaction: 65, gender_diversity: 28, governance_score: 68, esg_controversies: 2, roe: 14, stock_volatility: 35, simulation_label: 'Energy Transition' },
+        laggard:    { renewable_energy: 20, waste_recycling: 25, carbon_emission_score: 88, water_management: 30, employee_satisfaction: 40, gender_diversity: 15, governance_score: 40, esg_controversies: 6, roe: -8, stock_volatility: 58, simulation_label: 'Carbon Laggard' },
+        healthcare: { renewable_energy: 65, waste_recycling: 70, carbon_emission_score: 35, water_management: 80, employee_satisfaction: 85, gender_diversity: 40, governance_score: 80, esg_controversies: 1, roe: 19, stock_volatility: 22, simulation_label: 'Healthcare Benchmark' },
+        default:    { renewable_energy: 70, waste_recycling: 65, carbon_emission_score: 40, water_management: 70, employee_satisfaction: 75, gender_diversity: 35, governance_score: 80, esg_controversies: 1, roe: 22, stock_volatility: 22, simulation_label: 'Custom Company' }
+      };
+      S.sim = presets[type] || presets.default;
+      renderSimulator();
+    }
+
+    async function saveSimRun() {
+      if (!S.token) return openAuthModal();
+      try { await runSimulation(); alert('Simulation saved to your account!'); } catch (e) { alert(e.message); }
+    }
+
+    // ==========================================
+    // 4. COMPANY SCREENER
+    // ==========================================
+    let expQuery = { page: 1, q: '', sector: '', country: '', rec: '', risk: '', sort_by: 'Overall_ESG_Score', order: 'desc' };
+
+    async function renderExplorer() {
+      const app = document.getElementById('app');
+      app.innerHTML = `
+        <div class="card" style="margin-bottom: 24px;">
+          <div class="card-header">
+            <div>
+              <div class="card-title"><span class="icon">🔍</span> Multi-Dimensional Corporate ESG Screener</div>
+              <div class="card-subtitle">Search, filter, and audit 10,000 corporate securities across global sectors</div>
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 16px;">
+            <input type="text" id="scrQ" placeholder="Search Company name..." value="${expQuery.q}">
+            <select id="scrSector">
+              <option value="">All Sectors</option>
+              ${['Automobile', 'Banking', 'Energy', 'Healthcare', 'IT', 'Manufacturing', 'Retail', 'Telecom'].map(s => `<option value="${s}" ${expQuery.sector === s ? 'selected' : ''}>${s}</option>`).join('')}
+            </select>
+            <select id="scrCountry">
+              <option value="">All Countries</option>
+              ${['Australia', 'Canada', 'Germany', 'India', 'Japan', 'UK', 'USA'].map(c => `<option value="${c}" ${expQuery.country === c ? 'selected' : ''}>${c}</option>`).join('')}
+            </select>
+            <select id="scrRec">
+              <option value="">All Recommendations</option>
+              <option value="Buy" ${expQuery.rec === 'Buy' ? 'selected' : ''}>Buy</option>
+              <option value="Hold" ${expQuery.rec === 'Hold' ? 'selected' : ''}>Hold</option>
+              <option value="Avoid" ${expQuery.rec === 'Avoid' ? 'selected' : ''}>Avoid</option>
+            </select>
+            <select id="scrSort">
+              <option value="Overall_ESG_Score">Sort by ESG Score</option>
+              <option value="Market_Cap_Billion">Sort by Market Cap</option>
+              <option value="ROE">Sort by ROE</option>
+              <option value="Renewable_Energy_Usage">Sort by Renewable Usage</option>
+            </select>
+            <button class="btn-sm btn-primary" style="justify-content: center;" onclick="applyScreenerFilters()">Apply Filters</button>
+          </div>
+          <div id="screenerTableWrap">Loading securities…</div>
+        </div>
+      `;
+      loadScreenerData();
+    }
+
+    function applyScreenerFilters() {
+      expQuery.q = document.getElementById('scrQ').value;
+      expQuery.sector = document.getElementById('scrSector').value;
+      expQuery.country = document.getElementById('scrCountry').value;
+      expQuery.rec = document.getElementById('scrRec').value;
+      expQuery.sort_by = document.getElementById('scrSort').value;
+      expQuery.page = 1;
+      loadScreenerData();
+    }
+
+    async function loadScreenerData() {
+      const wrap = document.getElementById('screenerTableWrap');
+      try {
+        const res = await api(`/companies?page=${expQuery.page}&q=${encodeURIComponent(expQuery.q)}&sector=${expQuery.sector}&country=${expQuery.country}&rec=${expQuery.rec}&sort_by=${expQuery.sort_by}&order=${expQuery.order}`);
+        const totalPages = Math.ceil(res.total / res.page_size) || 1;
+        wrap.innerHTML = `
+          <div style="overflow-x: auto;">
+            <table>
+              <thead><tr><th>Company</th><th>Sector</th><th>Country</th><th>ESG Score</th><th>Renewables</th><th>Recycling</th><th>ROE</th><th>Action</th><th>Watchlist</th></tr></thead>
+              <tbody>
+                ${res.items.map(r => `
+                  <tr class="clickable-row">
+                    <td onclick="viewCompany(${r.Company_ID})"><b>${r.Company_Name}</b></td>
+                    <td onclick="viewCompany(${r.Company_ID})">${r.Industry_Sector}</td>
+                    <td onclick="viewCompany(${r.Company_ID})">${r.Country}</td>
+                    <td onclick="viewCompany(${r.Company_ID})"><b style="color:${r.Overall_ESG_Score>=70?'#34d399':r.Overall_ESG_Score>=50?'#fbbf24':'#fb7185'};">${r.Overall_ESG_Score}</b></td>
+                    <td onclick="viewCompany(${r.Company_ID})">${r.Renewable_Energy_Usage}%</td>
+                    <td onclick="viewCompany(${r.Company_ID})">${r.Waste_Recycling_Rate}%</td>
+                    <td onclick="viewCompany(${r.Company_ID})">${r.ROE}%</td>
+                    <td onclick="viewCompany(${r.Company_ID})"><span class="tag tag-${r.Recommendation}">${r.Recommendation}</span></td>
+                    <td><button class="btn-sm" onclick="toggleWatchlist(${r.Company_ID})">⭐</button></td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; font-size: 12px; color: var(--text-muted);">
+            <div>Showing ${res.items.length} of ${res.total.toLocaleString()} companies · Page ${expQuery.page} of ${totalPages}</div>
+            <div style="display: flex; gap: 6px;">
+              <button class="btn-sm" ${expQuery.page<=1?'disabled style="opacity:0.4;"':''} onclick="expQuery.page--;loadScreenerData()">‹ Prev</button>
+              <button class="btn-sm" ${expQuery.page>=totalPages?'disabled style="opacity:0.4;"':''} onclick="expQuery.page++;loadScreenerData()">Next ›</button>
+            </div>
+          </div>
+        `;
+      } catch (e) { wrap.innerHTML = `<p style="color:var(--rose);">Error: ${e.message}</p>`; }
+    }
+
+    async function toggleWatchlist(cid) {
+      if (!S.token) return openAuthModal();
+      try { await api('/watchlist/' + cid, { method: 'POST' }); alert(`Company added to watchlist!`); } catch (e) { alert(e.message); }
+    }
+
+    async function viewCompany(cid) {
+      const modal = document.getElementById('companyModal');
+      const title = document.getElementById('modalCompName');
+      const body  = document.getElementById('modalCompBody');
+      modal.style.display = 'flex';
+      body.innerHTML = 'Loading company profile…';
+      try {
+        const res = await api('/company/' + cid);
+        const c = res.company;
+        title.innerHTML = `${c.Company_Name} <span class="tag tag-${c.Recommendation}">${c.Recommendation}</span>`;
+        body.innerHTML = `
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; font-size: 13px;">
+            <div><strong>Sector:</strong> ${c.Industry_Sector}</div>
+            <div><strong>Country:</strong> ${c.Country}</div>
+            <div><strong>Overall ESG Score:</strong> <b style="color:#34d399;">${c.Overall_ESG_Score}</b> / 100</div>
+            <div><strong>Investment Risk:</strong> ${c.Investment_Risk} Risk</div>
+            <div><strong>Market Cap:</strong> $${c.Market_Cap_Billion} Billion</div>
+            <div><strong>Annual Revenue:</strong> $${c.Annual_Revenue_Billion} Billion</div>
+            <div><strong>ROE:</strong> ${c.ROE}%</div>
+            <div><strong>Stock Volatility:</strong> ${c.Stock_Volatility}%</div>
+          </div>
+          <div style="background: rgba(255,255,255,0.03); border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: 12px; line-height: 1.6;">
+            <strong>ESG Metrics:</strong><br>
+            • Clean Energy Usage: <b>${c.Renewable_Energy_Usage}%</b><br>
+            • Waste Recycling Rate: <b>${c.Waste_Recycling_Rate}%</b><br>
+            • Carbon Emission Intensity: <b>${c.Carbon_Emission_Score}</b><br>
+            • Water Management: <b>${c.Water_Management_Score}</b><br>
+            • Employee Satisfaction: <b>${c.Employee_Satisfaction}</b><br>
+            • Corporate Governance: <b>${c.Governance_Score}</b><br>
+            • Active Controversies: <b>${c.ESG_Controversies}</b>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn-sm btn-primary" style="flex: 1; padding: 10px;" onclick="loadCompanyToEval('${c.Company_Name}','${c.Industry_Sector}','${c.Country}',${c.Market_Cap_Billion},${c.Renewable_Energy_Usage},${c.Waste_Recycling_Rate},${c.Carbon_Emission_Score},${c.Water_Management_Score},${c.Employee_Satisfaction},${c.Gender_Diversity},${c.Governance_Score},${c.ESG_Controversies},${c.ROE},${c.Stock_Volatility})">🎯 Evaluate</button>
+            <button class="btn-sm" style="padding: 10px;" onclick="toggleWatchlist(${c.Company_ID})">⭐ Watchlist</button>
+          </div>
+        `;
+      } catch (e) { body.innerHTML = `<p style="color:var(--rose);">${e.message}</p>`; }
+    }
+
+    function closeCompanyModal() { document.getElementById('companyModal').style.display = 'none'; }
+
+    function loadCompanyToEval(name, sector, country, mcap, reu, wrr, ces, wms, emp, div, gov, con, roe, vol) {
+      closeCompanyModal();
+      S.evalInput = { company_name: name, industry_sector: sector, country, market_cap_billion: mcap, renewable_energy: reu, waste_recycling: wrr, carbon_emission_score: ces, water_management: wms, employee_satisfaction: emp, gender_diversity: div, governance_score: gov, esg_controversies: con, roe, stock_volatility: vol };
+      nav('eval');
+    }
+
+    // ==========================================
+    // 5. AI TECHNIQUES LAB
+    // ==========================================
+    function renderLab() {
+      const app = document.getElementById('app');
+      app.innerHTML = `
+        <div class="card" style="margin-bottom: 20px; padding: 14px 20px;">
+          <div class="card-title" style="margin-bottom: 4px;"><span class="icon">🧪</span> AI Techniques Lab — Applied Algorithms on ESG Data</div>
+          <div class="card-subtitle">Interactive exploration of K-Means, Decision Tree, Hill Climbing, Genetic Algorithm, and Factor Analysis</div>
+        </div>
+        <div class="lab-tabs">
+          <button class="lab-tab ${S.labTab==='kmeans'?'active':''}" onclick="switchLab('kmeans')">🔵 K-Means Clusters</button>
+          <button class="lab-tab ${S.labTab==='dtree'?'active':''}"  onclick="switchLab('dtree')">🌳 Decision Tree (ID3)</button>
+          <button class="lab-tab ${S.labTab==='hclimb'?'active':''}" onclick="switchLab('hclimb')">⛰️ Hill Climbing</button>
+          <button class="lab-tab ${S.labTab==='ga'?'active':''}"    onclick="switchLab('ga')">🧬 Genetic Algorithm</button>
+          <button class="lab-tab ${S.labTab==='fa'?'active':''}"    onclick="switchLab('fa')">📐 Factor Analysis &amp; PEAS</button>
+        </div>
+        <div id="labContent"></div>
+      `;
+      loadLabContent();
+    }
+
+    function switchLab(tab) {
+      S.labTab = tab;
+      document.querySelectorAll('.lab-tab').forEach((b, i) => {
+        const tabs = ['kmeans','dtree','hclimb','ga','fa'];
+        b.classList.toggle('active', tabs[i] === tab);
+      });
+      loadLabContent();
+    }
+
+    async function loadLabContent() {
+      const content = document.getElementById('labContent');
+      if (!content) return;
+      if      (S.labTab === 'kmeans') await renderKMeans(content);
+      else if (S.labTab === 'dtree')  await renderDTree(content);
+      else if (S.labTab === 'hclimb') renderHillClimbing(content);
+      else if (S.labTab === 'ga')     renderGA(content);
+      else if (S.labTab === 'fa')     renderFactorAnalysis(content);
+    }
+
+    // ---- K-Means ----
+    async function renderKMeans(content) {
+      content.innerHTML = `<div style="text-align:center;padding:40px;color:var(--text-muted);">Loading K-Means cluster data…</div>`;
+      try {
+        const data = await api('/clusters');
+        const clusterColors = { 'ESG Laggards': '#f43f5e', 'Mixed': '#f59e0b', 'ESG Leaders': '#10b981' };
+        content.innerHTML = `
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <div class="card-title"><span class="icon">🔵</span> K-Means Cluster Scatter (k=3)</div>
+                  <div class="card-subtitle">ROE vs Overall ESG Score, coloured by cluster label</div>
+                </div>
+              </div>
+              <div class="chart-container tall"><canvas id="chartKMScatter"></canvas></div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <div class="card-title"><span class="icon">📋</span> Cluster Summary Table</div>
+                  <div class="card-subtitle">Mean ESG Score, size, and mean metrics per cluster</div>
+                </div>
+              </div>
+              <table>
+                <thead><tr><th>Cluster Label</th><th>Size</th><th>Avg ESG</th><th>Avg ROE</th><th>Avg Renewables</th><th>Avg Governance</th></tr></thead>
+                <tbody>
+                  ${data.clusters.map(c => `
+                    <tr>
+                      <td><b style="color:${clusterColors[c.label]||'#fff'}">${c.label}</b></td>
+                      <td>${c.size.toLocaleString()}</td>
+                      <td><b>${c.means.Overall_ESG_Score}</b></td>
+                      <td>${c.means.ROE}%</td>
+                      <td>${c.means.Renewable_Energy_Usage}%</td>
+                      <td>${c.means.Governance_Score}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+              <div style="margin-top:16px;padding:12px;background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);border-radius:8px;font-size:12px;">
+                <b style="color:#34d399;">Algorithm:</b> scikit-learn KMeans, k=3, features: [Carbon Emission, Renewable Energy, Waste Recycling, Employee Satisfaction, Governance, ROE, Stock Volatility]. Clusters labelled by ascending mean Overall_ESG_Score.
+              </div>
+            </div>
+          </div>
+        `;
+        const grpByCluster = {};
+        data.scatter.forEach(pt => { if (!grpByCluster[pt.cluster]) grpByCluster[pt.cluster] = []; grpByCluster[pt.cluster].push({ x: pt.roe, y: pt.esg }); });
+        renderChart('chartKMScatter', {
+          type: 'scatter',
+          data: {
+            datasets: Object.entries(grpByCluster).map(([label, pts]) => ({
+              label, data: pts,
+              backgroundColor: (clusterColors[label] || '#64748b') + '88',
+              borderColor: clusterColors[label] || '#64748b',
+              pointRadius: 3, pointHoverRadius: 5
+            }))
+          },
+          options: {
+            scales: {
+              x: { title: { display: true, text: 'ROE (%)', color: '#94a3b8' } },
+              y: { title: { display: true, text: 'Overall ESG Score', color: '#94a3b8' } }
+            }
+          }
+        });
+      } catch (e) { content.innerHTML = `<p style="color:var(--rose);">Error: ${e.message}</p>`; }
+    }
+
+    // ---- Decision Tree ----
+    async function renderDTree(content) {
+      content.innerHTML = `<div style="text-align:center;padding:40px;color:var(--text-muted);">Loading Decision Tree data…</div>`;
+      try {
+        const data = await api('/decision-tree');
+        const leafColor = { Buy: 'pred-Buy', Hold: 'pred-Hold', Avoid: 'pred-Avoid' };
+        const reuOrder = ['Low', 'Medium', 'High'];
+        const wryOrder = ['Low', 'Medium', 'High'];
+        content.innerHTML = `
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <div class="card-title"><span class="icon">🌳</span> ID3 Decision Tree — ESG Investment Classification</div>
+                  <div class="card-subtitle">Root split on <b style="color:#34d399;">${data.root_feature.replace(/_/g,' ')}</b> (Higher Information Gain wins)</div>
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;padding:14px;background:rgba(255,255,255,0.02);border-radius:8px;border:1px solid var(--border);">
+                <div><div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;font-weight:700;">Root Entropy</div><div style="font-size:22px;font-weight:800;color:#a78bfa;font-family:var(--font-mono);">${data.root_entropy}</div></div>
+                <div></div>
+                <div><div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;font-weight:700;">Info Gain — Renewable Energy</div><div style="font-size:20px;font-weight:800;color:#34d399;font-family:var(--font-mono);">${data.ig_reu}</div></div>
+                <div><div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;font-weight:700;">Info Gain — Waste Recycling</div><div style="font-size:20px;font-weight:800;color:#38bdf8;font-family:var(--font-mono);">${data.ig_wry}</div></div>
+              </div>
+              <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;font-weight:700;text-transform:uppercase;">🌿 Discretization Rules</div>
+              <div style="font-size:12px;line-height:1.8;padding:10px;background:rgba(255,255,255,0.02);border-radius:8px;border:1px solid var(--border);">
+                <b>Renewable Energy Usage:</b> Low ≤35 · Medium 35–65 · High &gt;65<br>
+                <b>Waste Recycling Rate:</b> Low ≤40 · Medium 40–65 · High &gt;65<br>
+                <b>Target Classes:</b> Avoid · Hold · Buy
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title"><span class="icon">🍃</span> 9 Leaf Nodes (3×3 Band Grid)</div>
+                <div class="card-subtitle">Majority class, class counts, and leaf entropy per band combination</div>
+              </div>
+              <div style="overflow-x:auto;">
+                <table>
+                  <thead><tr><th>RenewE Band</th><th>WasteR Band</th><th>Majority</th><th>Avoid</th><th>Hold</th><th>Buy</th><th>Entropy</th></tr></thead>
+                  <tbody>
+                    ${data.leaves.map(l => `
+                      <tr>
+                        <td>${l.reu}</td>
+                        <td>${l.wry}</td>
+                        <td><span class="tag tag-${l.majority}">${l.majority}</span></td>
+                        <td style="color:#fb7185;">${l.counts.Avoid}</td>
+                        <td style="color:#fbbf24;">${l.counts.Hold}</td>
+                        <td style="color:#34d399;">${l.counts.Buy}</td>
+                        <td style="font-family:var(--font-mono);">${l.entropy}</td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><span class="icon">🗺️</span> Visual Leaf Grid — Renewable Energy (rows) × Waste Recycling (cols)</div>
+              <div class="card-subtitle">Each cell = leaf node with majority class and company count</div>
+            </div>
+            <div style="display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:8px;align-items:center;">
+              <div></div>
+              ${wryOrder.map(w=>`<div style="text-align:center;font-size:11px;font-weight:700;color:var(--cyan);">Waste: ${w}</div>`).join('')}
+              ${reuOrder.map(r => `
+                <div style="font-size:11px;font-weight:700;color:var(--emerald);writing-mode:vertical-lr;transform:rotate(180deg);text-align:center;">Renew: ${r}</div>
+                ${wryOrder.map(w => {
+                  const leaf = data.leaves.find(l => l.reu===r && l.wry===w);
+                  if (!leaf) return '<div></div>';
+                  return `<div class="dt-leaf ${leafColor[leaf.majority]||''}">
+                    <div class="leaf-label">${r} × ${w}</div>
+                    <div class="leaf-pred" style="color:${leaf.majority==='Buy'?'#34d399':leaf.majority==='Hold'?'#fbbf24':'#fb7185'};">${leaf.majority}</div>
+                    <div style="font-size:10px;color:var(--text-muted);">${leaf.total.toLocaleString()} companies</div>
+                    <div style="font-size:10px;color:var(--text-dim);">H=${leaf.entropy}</div>
+                  </div>`;
+                }).join('')}
+              `).join('')}
+            </div>
+          </div>
+        `;
+      } catch (e) { content.innerHTML = `<p style="color:var(--rose);">Error: ${e.message}</p>`; }
+    }
+
+    // ---- Hill Climbing ----
+    function renderHillClimbing(content) {
+      content.innerHTML = `
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title"><span class="icon">⛰️</span> Hill Climbing Local Search</div>
+                <div class="card-subtitle">score = 0.5·ESG + 0.2·Growth + 0.15·Dividend − 0.1·Volatility</div>
+              </div>
+            </div>
+            <div style="padding:14px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:8px;margin-bottom:16px;font-size:12px;line-height:1.8;">
+              <b style="color:#34d399;">Algorithm:</b> Start from a random weak company (bottom 15th percentile by score). At each step, compute Euclidean distances in standardised feature space, find 10 nearest neighbours. Move to the neighbour with highest score if it exceeds current. Terminate when no neighbour improves.
+            </div>
+            <button class="btn-sm btn-primary" style="width:100%;padding:12px;justify-content:center;" onclick="runHillClimb()">
+              ▶ Run Hill Climbing (Random Start)
+            </button>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><span class="icon">📈</span> Score Progression</div>
+            </div>
+            <div class="chart-container"><canvas id="chartHCSCore"></canvas></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:0;">
+          <div class="card-header">
+            <div class="card-title"><span class="icon">🗺️</span> Climb Path — Step-by-Step</div>
+            <div class="card-subtitle">Each row is a greedy best-neighbour move; highlighted row = final peak</div>
+          </div>
+          <div id="hcStepContainer">
+            <p style="color:var(--text-muted);font-size:13px;">Click "Run Hill Climbing" to start a new search from a random weak company.</p>
+          </div>
+        </div>
+      `;
+    }
+
+    async function runHillClimb() {
+      const stepContainer = document.getElementById('hcStepContainer');
+      if (stepContainer) stepContainer.innerHTML = `<p style="color:var(--text-muted);">🔄 Searching… please wait</p>`;
+      try {
+        const data = await api('/hillclimb', { method: 'POST', body: {} });
+        S.hcPath = data.path;
+        const maxScore = Math.max(...data.path.map(p => p.score));
+        const minScore = Math.min(...data.path.map(p => p.score));
+
+        renderChart('chartHCSCore', {
+          type: 'line',
+          data: {
+            labels: data.path.map(p => `Step ${p.step}`),
+            datasets: [{
+              label: 'Hill Climbing Score',
+              data: data.path.map(p => p.score),
+              borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.12)',
+              borderWidth: 2.5, fill: true, tension: 0.3, pointRadius: 5, pointBackgroundColor: '#10b981'
+            }]
+          },
+          options: { scales: { y: { title: { display: true, text: 'Composite Score', color: '#94a3b8' } } } }
+        });
+
+        if (stepContainer) {
+          stepContainer.innerHTML = data.path.map((p, i) => `
+            <div class="hc-step ${i === data.path.length - 1 ? 'current' : ''}">
+              <div class="hc-num">${p.step}</div>
+              <div style="flex:1;">
+                <div style="font-size:13px;font-weight:700;color:#fff;">${p.company_name}</div>
+                <div style="font-size:11px;color:var(--text-muted);">${p.sector} · ESG: <b>${p.esg}</b> · Growth: ${p.growth}% · Yield: ${p.div_yield}% · Volatility: ${p.volatility}%</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:14px;font-weight:800;font-family:var(--font-mono);color:${i===data.path.length-1?'#34d399':'#94a3b8'};">${p.score.toFixed(4)}</div>
+                <div style="font-size:10px;color:var(--text-dim);">score</div>
+              </div>
+              <span class="tag tag-${p.recommendation}">${p.recommendation}</span>
+            </div>
+          `).join('') + `<div style="padding:10px 14px;border-radius:var(--radius-sm);background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.3);font-size:12px;margin-top:8px;color:#a7f3d0;">
+            🏔️ <b>Peak reached after ${data.steps} step${data.steps!==1?'s':''}</b>. Score improved from <b>${data.path[0]?.score.toFixed(4)||'—'}</b> → <b>${data.path[data.path.length-1]?.score.toFixed(4)||'—'}</b>. No further neighbour exceeds current score — local optimum found.
+          </div>`;
+        }
+      } catch (e) {
+        if (stepContainer) stepContainer.innerHTML = `<p style="color:var(--rose);">Error: ${e.message}</p>`;
+      }
+    }
+
+    // ---- Genetic Algorithm ----
+    function renderGA(content) {
+      content.innerHTML = `
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title"><span class="icon">🧬</span> Genetic Algorithm — Equation Solver</div>
+                <div class="card-subtitle">Find A,B,C,D ∈ [1,30] such that: c₁A + c₂B + c₃C + c₄D = Target</div>
+              </div>
+            </div>
+            <div style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">Edit coefficients and target, then evolve:</div>
+            <div class="ga-coeff-row">
+              <div class="form-group" style="margin:0;"><label>c₁ (A)</label><input type="number" id="ga_c1" value="${S.gaCoeffs[0]}" min="1" max="20"></div>
+              <div class="form-group" style="margin:0;"><label>c₂ (B)</label><input type="number" id="ga_c2" value="${S.gaCoeffs[1]}" min="1" max="20"></div>
+              <div class="form-group" style="margin:0;"><label>c₃ (C)</label><input type="number" id="ga_c3" value="${S.gaCoeffs[2]}" min="1" max="20"></div>
+              <div class="form-group" style="margin:0;"><label>c₄ (D)</label><input type="number" id="ga_c4" value="${S.gaCoeffs[3]}" min="1" max="20"></div>
+            </div>
+            <div class="form-group" style="margin-bottom:14px;"><label>Target Value (T)</label><input type="number" id="ga_target" value="${S.gaTarget}" min="1" max="1000"></div>
+            <div style="padding:10px 14px;border-radius:8px;background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.3);font-size:12px;margin-bottom:14px;">
+              <b id="gaEquationDisplay" style="color:#a78bfa;">2A + 4B + 7C + 9D = 70</b><br>
+              <span style="color:var(--text-muted);">Population: 6 chromosomes · Roulette selection · Single-point crossover · Random mutation</span>
+            </div>
+            <button class="btn-sm btn-primary" style="width:100%;padding:12px;justify-content:center;" id="gaRunBtn" onclick="runGA()">
+              🧬 Evolve Population (Run Genetic Algorithm)
+            </button>
+            <div id="gaBestSolution" style="margin-top:12px;"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><span class="icon">📈</span> Fitness per Generation</div>
+              <div class="card-subtitle">Higher fitness = closer to target; 1.0 = perfect solution</div>
+            </div>
+            <div class="chart-container tall"><canvas id="chartGAFitness"></canvas></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="icon">🧫</span> Generation-by-Generation Population Log</div>
+            <div class="card-subtitle">Each row: best chromosome of that generation and its fitness</div>
+          </div>
+          <div id="gaGenerationLog" style="overflow-x:auto;"></div>
+        </div>
+      `;
+      updateGAEquationDisplay();
+      ['ga_c1','ga_c2','ga_c3','ga_c4','ga_target'].forEach(id => {
+        document.getElementById(id)?.addEventListener('input', updateGAEquationDisplay);
+      });
+    }
+
+    function updateGAEquationDisplay() {
+      const c = [1,2,3,4].map(i => parseInt(document.getElementById('ga_c'+i)?.value)||0);
+      const t = parseInt(document.getElementById('ga_target')?.value)||70;
+      const vars = ['A','B','C','D'];
+      const eq = c.map((ci,i) => `${ci}${vars[i]}`).join(' + ') + ` = ${t}`;
+      const el = document.getElementById('gaEquationDisplay');
+      if (el) el.textContent = eq;
+    }
+
+    function gaFitness(chrom, coeffs, target) {
+      const val = chrom.reduce((s, v, i) => s + coeffs[i] * v, 0);
+      return 1 / (1 + Math.abs(val - target));
+    }
+
+    function runGA() {
+      const coeffs = [1,2,3,4].map(i => parseInt(document.getElementById('ga_c'+i)?.value)||1);
+      const target = parseInt(document.getElementById('ga_target')?.value)||70;
+      const popSize = 6;
+      const maxGen = 60;
+      const mutRate = 0.15;
+      const lo = 1, hi = 30;
+
+      // init population
+      let pop = Array.from({ length: popSize }, () => Array.from({ length: 4 }, () => Math.floor(Math.random() * (hi - lo + 1)) + lo));
+      S.gaHistory = [];
+
+      for (let gen = 0; gen < maxGen; gen++) {
+        const fitnesses = pop.map(c => gaFitness(c, coeffs, target));
+        const total = fitnesses.reduce((a, b) => a + b, 0);
+
+        // record best
+        const bestIdx = fitnesses.indexOf(Math.max(...fitnesses));
+        S.gaHistory.push({ gen: gen + 1, best: [...pop[bestIdx]], fitness: fitnesses[bestIdx] });
+
+        if (fitnesses[bestIdx] >= 0.9999) break;
+
+        // roulette selection + new generation
+        const newPop = [];
+        for (let k = 0; k < popSize; k++) {
+          let r = Math.random() * total, cumulative = 0, parent1Idx = 0;
+          for (let j = 0; j < popSize; j++) { cumulative += fitnesses[j]; if (cumulative >= r) { parent1Idx = j; break; } }
+          r = Math.random() * total; cumulative = 0; let parent2Idx = 0;
+          for (let j = 0; j < popSize; j++) { cumulative += fitnesses[j]; if (cumulative >= r) { parent2Idx = j; break; } }
+
+          const cp = Math.floor(Math.random() * 3) + 1;
+          const child = [...pop[parent1Idx].slice(0, cp), ...pop[parent2Idx].slice(cp)];
+          if (Math.random() < mutRate) { const mi = Math.floor(Math.random() * 4); child[mi] = Math.floor(Math.random() * (hi - lo + 1)) + lo; }
+          newPop.push(child);
+        }
+        pop = newPop;
+      }
+
+      // Render chart
+      renderChart('chartGAFitness', {
+        type: 'line',
+        data: {
+          labels: S.gaHistory.map(h => `Gen ${h.gen}`),
+          datasets: [{
+            label: 'Best Fitness',
+            data: S.gaHistory.map(h => h.fitness),
+            borderColor: '#a78bfa', backgroundColor: 'rgba(139,92,246,0.12)',
+            borderWidth: 2.5, fill: true, tension: 0.3, pointRadius: 3
+          }]
+        },
+        options: { scales: { y: { min: 0, max: 1, title: { display: true, text: 'Fitness (1 = perfect)', color: '#94a3b8' } } } }
+      });
+
+      // Best solution
+      const lastBest = S.gaHistory[S.gaHistory.length - 1];
+      const resVal = lastBest.best.reduce((s, v, i) => s + coeffs[i] * v, 0);
+      const solEl = document.getElementById('gaBestSolution');
+      if (solEl) {
+        solEl.innerHTML = `
+          <div style="padding:12px;border-radius:8px;background:${Math.abs(resVal-target)<1?'rgba(16,185,129,0.1)':'rgba(245,158,11,0.1)'};border:1px solid ${Math.abs(resVal-target)<1?'rgba(16,185,129,0.4)':'rgba(245,158,11,0.4)'};font-size:13px;">
+            <b>Best Solution:</b> A=${lastBest.best[0]}, B=${lastBest.best[1]}, C=${lastBest.best[2]}, D=${lastBest.best[3]}<br>
+            <b>Result:</b> ${coeffs.map((c,i)=>c+'×'+lastBest.best[i]).join(' + ')} = <b style="color:${Math.abs(resVal-target)<1?'#34d399':'#fbbf24'};">${resVal}</b> (Target: ${target})<br>
+            <b>Error:</b> ${Math.abs(resVal-target)} · <b>Fitness:</b> ${lastBest.fitness.toFixed(6)} · <b>Generations:</b> ${lastBest.gen}
+          </div>
+        `;
+      }
+
+      // Generation log table
+      const logEl = document.getElementById('gaGenerationLog');
+      if (logEl) {
+        logEl.innerHTML = `<table>
+          <thead><tr><th>Gen</th><th>A</th><th>B</th><th>C</th><th>D</th><th>Equation Value</th><th>Error</th><th>Fitness</th></tr></thead>
+          <tbody>
+            ${S.gaHistory.slice(-20).map(h => {
+              const v = h.best.reduce((s,x,i)=>s+coeffs[i]*x,0);
+              return `<tr>
+                <td>${h.gen}</td>
+                <td>${h.best[0]}</td><td>${h.best[1]}</td><td>${h.best[2]}</td><td>${h.best[3]}</td>
+                <td><b style="color:${Math.abs(v-target)<1?'#34d399':'#fbbf24'};">${v}</b></td>
+                <td>${Math.abs(v-target)}</td>
+                <td style="font-family:var(--font-mono);">${h.fitness.toFixed(6)}</td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table><div style="font-size:11px;color:var(--text-dim);margin-top:8px;">Showing last 20 generations</div>`;
+      }
+    }
+
+    // ---- Factor Analysis & PEAS ----
+    function renderFactorAnalysis(content) {
+      content.innerHTML = `
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title"><span class="icon">📐</span> Factor Analysis Summary</div>
+                <div class="card-subtitle">5 latent factors explaining ~86% of total variance in ESG dataset</div>
+              </div>
+            </div>
+            ${[
+              { name: 'Factor 1 — Environmental Intensity', vars: 'Carbon_Emission_Score, Renewable_Energy_Usage, Waste_Recycling_Rate, Water_Management_Score', pct: '28.4%' },
+              { name: 'Factor 2 — Social & Workforce', vars: 'Employee_Satisfaction, Gender_Diversity, ESG_Controversies', pct: '19.7%' },
+              { name: 'Factor 3 — Governance & Disclosure', vars: 'Governance_Score, ESG_News_Sentiment, ESG_Controversies', pct: '16.1%' },
+              { name: 'Factor 4 — Financial Returns', vars: 'ROE, Stock_Price_Growth, Dividend_Yield, Market_Cap_Billion', pct: '12.5%' },
+              { name: 'Factor 5 — Market Risk & Volatility', vars: 'Stock_Volatility, Debt_to_Equity, Net_Profit_Billion', pct: '9.3%' }
+            ].map(f => `
+              <div class="factor-card">
+                <div>
+                  <div class="factor-name">${f.name}</div>
+                  <div class="factor-var">${f.vars}</div>
+                </div>
+                <div class="factor-pct">${f.pct}</div>
+              </div>
+            `).join('')}
+            <div style="padding:10px 14px;border-radius:8px;background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);font-size:12px;margin-top:4px;">
+              Total variance explained by 5 factors: <b style="color:#34d399;">~86%</b><br>
+              Key finding: <b>Financial variables (Factor 4)</b> load independently from ESG pillars (Factors 1–3), confirming that strong ESG and strong financial returns can co-exist without multicollinearity.
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><span class="icon">🤖</span> PEAS Framework — EcoVest AI Agent</div>
+              <div class="card-subtitle">Performance · Environment · Actuators · Sensors</div>
+            </div>
+            <div style="overflow-x:auto;">
+              <table class="peas-table">
+                <thead><tr><th>PEAS Component</th><th>Definition for EcoVest AI</th></tr></thead>
+                <tbody>
+                  <tr><td><b style="color:#34d399;">P — Performance</b></td><td>Maximise ESG investment return while minimising sustainability risk; achieve high accuracy on Buy/Hold/Avoid classification; minimize R² error on ESG Score regression; help users avoid high-risk greenwashing companies</td></tr>
+                  <tr><td><b style="color:#38bdf8;">E — Environment</b></td><td>10,000-company ESG dataset across 8 sectors and 7 countries; real-time user inputs via sliders; stock market volatility signals; historical governance and controversy records; carbon emission and renewable energy data</td></tr>
+                  <tr><td><b style="color:#a78bfa;">A — Actuators</b></td><td>Investment Recommendation (Buy/Hold/Avoid); ESG Score Output (0–100); Investment Risk Tier (Low/Medium/High); AI Investment Thesis narrative; Company Screener filters; Watchlist management; Simulation presets; Cluster assignments; Hill Climbing path steps; Genetic Algorithm evolution</td></tr>
+                  <tr><td><b style="color:#fbbf24;">S — Sensors</b></td><td>Environmental pillar inputs (renewable energy, carbon score, waste recycling, water management); Social pillar inputs (employee satisfaction, gender diversity); Governance inputs (governance score, controversy count); Financial inputs (ROE, stock volatility); Company identity (sector, country, market cap)</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><span class="icon">📊</span> Variance Explained — Factor Loading Chart</div>
+          </div>
+          <div class="chart-container"><canvas id="chartFactorVar"></canvas></div>
+        </div>
+      `;
+
+      renderChart('chartFactorVar', {
+        type: 'bar',
+        data: {
+          labels: ['Factor 1\nEnvironmental', 'Factor 2\nSocial', 'Factor 3\nGovernance', 'Factor 4\nFinancial', 'Factor 5\nMarket Risk'],
+          datasets: [
+            { label: 'Variance Explained (%)', data: [28.4, 19.7, 16.1, 12.5, 9.3], backgroundColor: ['#10b981','#06b6d4','#8b5cf6','#f59e0b','#f43f5e'], borderRadius: 8 }
+          ]
+        },
+        options: {
+          plugins: { legend: { display: false } },
+          scales: { y: { title: { display: true, text: 'Variance Explained (%)', color: '#94a3b8' }, min: 0, max: 35, ticks: { callback: v => v + '%' } } }
+        }
+      });
+    }
+
+    // ==========================================
+    // 6. MY ACCOUNT & SAVED SIMULATIONS
+    // ==========================================
+    async function renderAccount() {
+      const app = document.getElementById('app');
+      if (!S.token) {
+        app.innerHTML = `
+          <div class="card" style="max-width: 480px; margin: 40px auto; text-align: center; padding: 40px 24px;">
+            <div style="font-size: 40px; margin-bottom: 12px;">🔒</div>
+            <h2 style="font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 8px;">Authentication Required</h2>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">
+              Sign in or create an account to access your personalized ESG investment watchlist and saved simulation history.
+            </p>
+            <button class="btn-sm btn-primary" style="padding: 10px 24px; font-size: 13px;" onclick="openAuthModal()">Login / Register</button>
+          </div>
+        `;
+        return;
+      }
+      app.innerHTML = `<div style="text-align: center; padding: 40px; color: var(--text-muted);">Loading account…</div>`;
+      try {
+        const [hist, wl] = await Promise.all([api('/history'), api('/watchlist')]);
+        app.innerHTML = `
+          <div class="card" style="margin-bottom: 24px;">
+            <div class="card-header">
+              <div>
+                <div class="card-title"><span class="icon">👤</span> Analyst Profile</div>
+                <div class="card-subtitle">Active Session: <b>${S.email}</b></div>
+              </div>
+              <button class="btn-sm btn-primary" onclick="logout()">Sign Out</button>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <div class="card-title"><span class="icon">🕘</span> Saved Evaluations &amp; Simulations</div>
+                  <div class="card-subtitle">${hist.length} saved runs</div>
+                </div>
+              </div>
+              <div style="overflow-x: auto;">
+                ${hist.length === 0 ? '<p style="color: var(--text-muted); font-size: 12px;">No saved evaluations yet.</p>' : `
+                  <table>
+                    <thead><tr><th>Date</th><th>Profile / Company</th><th>Predicted ESG</th><th>Rating</th><th>Risk</th></tr></thead>
+                    <tbody>
+                      ${hist.map(h => `
+                        <tr>
+                          <td>${new Date(h.ts * 1000).toLocaleDateString()}</td>
+                          <td><b>${h.output.company_name || h.output.label || 'Custom'}</b></td>
+                          <td><b style="color: #34d399;">${h.output.esg_score || h.output.predicted_esg_score}</b></td>
+                          <td><span class="tag tag-${h.output.recommendation}">${h.output.recommendation}</span></td>
+                          <td>${h.output.investment_risk}</td>
+                        </tr>
+                      `).join('')}
+                    </tbody>
+                  </table>
+                `}
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <div class="card-title"><span class="icon">⭐</span> Tracked Watchlist</div>
+                  <div class="card-subtitle">${wl.length} securities</div>
+                </div>
+              </div>
+              <div style="overflow-x: auto;">
+                ${wl.length === 0 ? '<p style="color: var(--text-muted); font-size: 12px;">Your watchlist is empty.</p>' : `
+                  <table>
+                    <thead><tr><th>Company</th><th>Sector</th><th>ESG</th><th>Rating</th><th>Remove</th></tr></thead>
+                    <tbody>
+                      ${wl.map(w => `
+                        <tr>
+                          <td><b>${w.Company_Name}</b></td>
+                          <td>${w.Industry_Sector}</td>
+                          <td><b>${w.Overall_ESG_Score}</b></td>
+                          <td><span class="tag tag-${w.Recommendation}">${w.Recommendation}</span></td>
+                          <td><button class="btn-sm" style="color: var(--rose);" onclick="removeWatchlist(${w.Company_ID})">✕</button></td>
+                        </tr>
+                      `).join('')}
+                    </tbody>
+                  </table>
+                `}
+              </div>
+            </div>
+          </div>
+        `;
+      } catch (e) { app.innerHTML = `<p style="color: var(--rose);">${e.message}</p>`; }
+    }
+
+    async function removeWatchlist(cid) {
+      try { await api('/watchlist/' + cid, { method: 'DELETE' }); renderAccount(); } catch (e) { alert(e.message); }
+    }
+
+    // ---------- Modal Controls ----------
+    function openAuthModal() {
+      document.getElementById('authModal').style.display = 'flex';
+      document.getElementById('authError').style.display = 'none';
+    }
+    function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; }
+
+    async function submitAuth(type) {
+      const email = document.getElementById('authEmail').value;
+      const pw = document.getElementById('authPassword').value;
+      const err = document.getElementById('authError');
+      err.style.display = 'none';
+      try {
+        const res = await api('/' + type, { method: 'POST', body: { email, password: pw } });
+        S.token = res.token;
+        S.email = res.email;
+        localStorage.setItem('ecovest_tok', res.token);
+        localStorage.setItem('ecovest_email', res.email);
+        updateUserUI();
+        closeAuthModal();
+        render();
+      } catch (e) {
+        err.textContent = e.message;
+        err.style.display = 'block';
+      }
+    }
+
+    function logout() {
+      S.token = '';
+      S.email = '';
+      localStorage.removeItem('ecovest_tok');
+      localStorage.removeItem('ecovest_email');
+      updateUserUI();
+      nav('dash');
+    }
+
+    // Start App
+    init();
+  </script>
+</body>
+</html>
